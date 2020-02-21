@@ -25,10 +25,25 @@ public class Library implements Comparable<Library> {
         //if (this.signup > library.getSignup()) return 1;
         //if (this.signup < library.getSignup()) return -1;
 
-        //double moy1 = this.scoreTot/(float) this.bookNbr;
-        //double moy2 = library.scoreTot/(float) library.bookNbr;
-        if (this.scoreTot > library.getScoreTot()) return -1;
-        if (this.scoreTot < library.getScoreTot()) return 1;
+        //if (this.scoreTot > library.getScoreTot()) return -1;
+        //if (this.scoreTot < library.getScoreTot()) return 1;
+
+        double moy1 = (this.scoreTot/(float) this.bookNbr) * this.bookPerDay;
+        double moy2 = (library.scoreTot/(float) library.bookNbr) * library.getBookPerDay();
+        double ratio = this.signup/(float) library.getSignup();
+        if (ratio>=1.2) return 1;
+        if (ratio<1.2 && ratio>0.8){
+            if (moy1 > moy2) return -1;
+            if (moy1 < moy2) return 1;
+            else {
+                if (ratio>1) return 1;
+                if (ratio<1) return -1;
+                else return 0;
+            }
+        }
+        if (ratio<=0.8) return -1;
+        //if (moy1 > moy2) return -1;
+        //if (moy1 < moy2) return 1;
         return 0;
     }
 
