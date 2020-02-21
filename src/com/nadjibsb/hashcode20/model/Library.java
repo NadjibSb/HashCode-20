@@ -1,10 +1,9 @@
 package com.nadjibsb.hashcode20.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
-public class Library implements Comparable<Library>{
+public class Library implements Comparable<Library> {
     private int ID;
     private ArrayList<Book> books;
     private int bookNbr;
@@ -14,11 +13,35 @@ public class Library implements Comparable<Library>{
 
     public Library(int id, int bookNbr, int signup, int bookPerDay) {
         this.ID = id;
-        this.books = new ArrayList<Book>();
         this.bookNbr = bookNbr;
         this.signup = signup;
         this.bookPerDay = bookPerDay;
+        this.books = new ArrayList<Book>();
         this.scoreTot = 0;
+    }
+
+    @Override
+    public int compareTo(Library library) {
+        //if (this.signup > library.getSignup()) return 1;
+        //if (this.signup < library.getSignup()) return -1;
+
+        //double moy1 = this.scoreTot/(float) this.bookNbr;
+        //double moy2 = library.scoreTot/(float) library.bookNbr;
+        if (this.scoreTot > library.getScoreTot()) return -1;
+        if (this.scoreTot < library.getScoreTot()) return 1;
+        return 0;
+    }
+
+    public void setBooks(ArrayList<Book> books) {
+        Collections.sort(books);
+        for (Book book : books) {
+            scoreTot += book.getScore();
+        }
+        this.books = books;
+    }
+
+    public ArrayList<Book> getBooks() {
+        return books;
     }
 
     public int getBookNbr() {
@@ -35,18 +58,6 @@ public class Library implements Comparable<Library>{
 
     public void setScoreTot(int scoreTot) {
         this.scoreTot = scoreTot;
-    }
-
-    public ArrayList<Book> getBooks() {
-        return books;
-    }
-
-    public void setBooks(ArrayList<Book> books) {
-        Collections.sort(books);
-        for (Book book: books){
-            scoreTot += book.getScore();
-        }
-        this.books = books;
     }
 
     public int getSignup() {
@@ -73,15 +84,5 @@ public class Library implements Comparable<Library>{
         this.bookPerDay = bookPerDay;
     }
 
-    @Override
-    public int compareTo(Library library) {
-        //if (this.signup > library.getSignup()) return 1;
-        //if (this.signup < library.getSignup()) return -1;
 
-        //double moy1 = this.scoreTot/(float) this.bookNbr;
-        //double moy2 = library.scoreTot/(float) library.bookNbr;
-        if (this.scoreTot > library.getScoreTot()) return -1;
-        if (this.scoreTot < library.getScoreTot()) return 1;
-        return 0;
-    }
 }

@@ -9,102 +9,78 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Scanner;
+
+import static com.nadjibsb.hashcode20.Utility.*;
 
 public class Main {
     ArrayList<Book> books;
 
     public static void main(String[] args) throws IOException {
 
-        Path path = Paths.get("f.txt");
-        Scanner scanner = new Scanner(path);
+        ArrayList<String> files = getFolderFilesPaths("input");
 
-        String[] line1 = scanner.nextLine().split(" ");
-        int nbrB = Integer.parseInt(line1[0]);
-        int nbrL = Integer.parseInt(line1[1]);
-        int nbrD = Integer.parseInt(line1[2]);
+        for (String filePath : files) {
+            Path path = Paths.get(filePath);
+            System.out.println("******************\n- Start processing => input file : " + path.getFileName().toString());
+            Scanner scanner = new Scanner(path);
 
-        String[] line2 = scanner.nextLine().split(" ");
+            // Read the first line (nbr of books, nbr of libraries, nbr of days)
+            String[] line1 = scanner.nextLine().split(" ");
+            int nbrB = Integer.parseInt(line1[0]);
+            int nbrL = Integer.parseInt(line1[1]);
+            int nbrD = Integer.parseInt(line1[2]);
 
-        ArrayList<Book> books = new ArrayList<Book>();
-        for (int i=0;i<line2.length;i++){
-            books.add(new Book(i,Integer.parseInt(line2[i])));
-        }
-        System.out.println("books finished");
-
-        ArrayList<Library> libraries = new ArrayList<Library>();
-        int j=0;
-        while(scanner.hasNextLine()){
-            //process each line
-            String[] line = scanner.nextLine().split(" ");
-            Library l = new Library(j,Integer.parseInt(line[0]),Integer.parseInt(line[1]),Integer.parseInt(line[2]));
-            //System.out.println(j);
-            ArrayList<Book> bookL = new ArrayList<Book>();
-            String[] bookLine = scanner.nextLine().split(" ");
-            for (int i=0;i<bookLine.length;i++){
-                bookL.add(getBook(books, Integer.parseInt(bookLine[i])));
+            // Read the second line (books scores ordered by BookID)
+            String[] line2 = scanner.nextLine().split(" ");
+            ArrayList<Book> books = new ArrayList<Book>();
+            for (int i = 0; i < line2.length; i++) {
+                books.add(new Book(i, Integer.parseInt(line2[i])));
             }
-            l.setBooks(bookL);
-            libraries.add(l);
-            j++;
-            //System.out.println(bookL.get(0).getScore()+ " => " + bookL.get(1).getScore());
-            //System.out.println("=>"+j);
-        }
-        scanner.close();
+            System.out.println("books initializing finished");
 
-        System.out.println("read finished");
-        Collections.sort(libraries);
-        System.out.println(libraries.get(0).getScoreTot()+" =>"+libraries.get(1).getScoreTot());
+            // Read the rest (each library is represented in two lines)
+            ArrayList<Library> libraries = new ArrayList<Library>();
+            int j = 0;
+            while (scanner.hasNextLine()) {
+                //process each line
+                String[] line = scanner.nextLine().split(" ");
+                Library l = new Library(j, Integer.parseInt(line[0]), Integer.parseInt(line[1]), Integer.parseInt(line[2]));
+                //System.out.println(j);
+                ArrayList<Book> bookL = new ArrayList<Book>();
+                String[] bookLine = scanner.nextLine().split(" ");
+                for (int i = 0; i < bookLine.length; i++) {
+                    bookL.add(getBook(books, Integer.parseInt(bookLine[i])));
+                }
+                l.setBooks(bookL);
+                libraries.add(l);
+                j++;
+            }
+            scanner.close();
 
-        //*********************************************************************
-//        for (Book b: books){
-//            System.out.println(" "+b.getScore());
-//        }
+            System.out.println("Libraries initializing finished");
+            Collections.sort(libraries);
+            System.out.println(libraries.get(0).getScoreTot() + " =>" + libraries.get(1).getScoreTot());
 
-        //*********************************************************************
+            BufferedWriter writer = new BufferedWriter(new FileWriter("output/out_" + path.getFileName().toString()));
+            int lNbr = getLibrariesNbr(libraries, nbrD);
+            writer.write(lNbr + "\n");
+            for (int i = 0; i < lNbr; i++) {
+                Library lib = libraries.get(i);
+                writer.append(lib.getID() + " " + lib.getBookNbr() + "\n");
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter("outF.txt"));
-        int lNbr= getLibrariesNbr(libraries,nbrD);
-        writer.write(lNbr+"\n");
-        for (int i = 0; i<lNbr;i++) {
-            Library lib = libraries.get(i);
-            writer.append(lib.getID() + " " + lib.getBookNbr()+"\n");
+                String s = "";
+                for (int x = 0; x < lib.getBooks().size(); x++) {
+                    s += lib.getBooks().get(x).getId() + " ";
+                }
 
-            String s = "";
-            for (int x=0; x<lib.getBooks().size(); x++){
-                s+= lib.getBooks().get(x).getId() + " ";
+                writer.append(s + "\n");
             }
 
-            writer.append(s+"\n");
+            System.out.println("\nend processing => output file : " + path.getFileName().toString() + "\n__________________");
+
+            writer.close();
         }
-
-        writer.close();
-
-
     }
-
-    public static Book getBook(ArrayList<Book> books , int id){
-        for (Book b: books){
-            if (b.getId()==id) return b;
-        }
-        return null;
-    }
-
-    public static int getLibrariesNbr(ArrayList<Library> libraries , int max){
-        int d = 0;
-        int i=0;
-        for (Library l: libraries){
-            i++;
-            d += l.getSignup();
-            if (d>max){
-                d -= l.getSignup();
-                i--;
-                break;
-            }
-        }
-        return i;
-    }
-
 }
