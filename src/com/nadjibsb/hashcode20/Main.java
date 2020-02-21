@@ -87,9 +87,7 @@ public class Main {
         BufferedWriter writer = new BufferedWriter(new FileWriter("output/out_" + path.getFileName().toString()));
         int libsToInsert = getLibrariesNbr(libraries, nbrD);
 
-
         // the first line contains the total number of libraries to insert
-        //writer.write(libraries.size() + "\n");
         int libNbr =0;
         String toWrite="";
 
@@ -101,8 +99,6 @@ public class Main {
             //the second line containes the books to insert
             String bookL = "";
             int booksNbr=0;
-            //System.out.println("library: "+lib.getID());
-            //System.out.println("books : "+lib.getBooks().toString());
             for (int x = 0; x < lib.getBooks().size(); x++) {
                 Book book = lib.getBooks().get(x);
                 if (!book.isScanned()){
@@ -111,13 +107,10 @@ public class Main {
                     booksNbr++;
                 }
             }
-            //System.out.println("Books to insert : "+s);
             if (booksNbr>0){
                 toWrite += lib.getID() + " " + booksNbr + "\n";
                 toWrite += bookL+ "\n";
                 libNbr++;
-                //writer.append(lib.getID() + " " + booksNbr + "\n");
-                //writer.append(bookL + "\n");
             }
         }
         writer.write(libNbr + "\n");
