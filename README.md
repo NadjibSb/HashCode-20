@@ -1,4 +1,4 @@
-# HashCode-20 : Book scanning
+# HashCode-20 : Book scanning 
 
 
 ### Task
